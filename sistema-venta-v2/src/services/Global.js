@@ -1,6 +1,8 @@
 import {apiBaseUrl} from '../utils/Api';
 import React, { useState } from 'react';
 
+import { createTheme} from '@mui/material/styles';
+
 
 export const Usuario = function (id, usuario, nombre, rol, estado) {
     this.id = id;
@@ -34,7 +36,28 @@ export const VentaA = function (id, clienteDocumento,nombreCliente, fecha, idUsu
     this.usuario = new Usuario(idUsuario, '', nombreUsuario, '', '');
 }
 
+export const Producto = function (id, nombre, valorUnitario, estado) {
+    this.id = id;
+    this.nombre = nombre;
+    this.valorUnitario = valorUnitario;
+    this.estado = estado;
+}
 
+export const theme = createTheme({
+    status: {
+        danger: '#e53e3e',
+    },
+    palette: {
+        primary: {
+            main: '#FFC107',
+            darker: '#053e85',
+        },
+        neutral: {
+            main: '#64748B',
+            contrastText: '#fff',
+        },
+    },
+});
 
 export const listarVentas = () => {
     // Consultar la lista de ventas desde la API
@@ -67,7 +90,7 @@ export const listarVentas = () => {
 }
 
 export const listarUsuarios = () => {
-    // Consultar la lista de monedas desde la API
+    // Consultar la lista de usuarios desde la API
     return fetch(`${apiBaseUrl}/usuarios`, { method: "get"})
     .then((res) => res.json())
     .then((json) => {
@@ -82,5 +105,23 @@ export const listarUsuarios = () => {
         });
         
         return usuarios;
+    });
+}
+
+export const listarProductos = () => {
+    // Consultar la lista de productos desde la API
+    return fetch(`${apiBaseUrl}/productos`, { method: "get"})
+    .then((res) => res.json())
+    .then((json) => {
+        var productos = [];
+        json.map((item) => {
+            productos.push(new Producto(
+                item.Id,
+                item.Nombre,
+                item.ValorUnitario,
+                item.Estado));
+        });
+        
+        return productos;
     });
 }

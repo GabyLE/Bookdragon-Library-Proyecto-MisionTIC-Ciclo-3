@@ -17,7 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 // Globals
-import { VentaL, VentaA, listarVentas, buscarVentas} from '../services/Global';
+import { VentaL, VentaA, listarVentas, theme} from '../services/Global';
 import { apiBaseUrl } from '../utils/Api';
 
 const tipos = [
@@ -38,21 +38,7 @@ const columnas = [
     {field: "nombreUsuario", headerName: "Encargado", width: 300},
 ]
 
-const theme = createTheme({
-    status: {
-        danger: '#e53e3e',
-    },
-    palette: {
-        primary: {
-            main: '#FFC107',
-            darker: '#053e85',
-        },
-        neutral: {
-            main: '#64748B',
-            contrastText: '#fff',
-        },
-    },
-});
+
 
 
 
@@ -86,12 +72,11 @@ const Ventas = () => {
     async function obtenerBusqueda() {
         const ventasT = await buscarVentas();
         setVentas(ventasT);
-        // window.alert(`VENTAS: ${ventas}`);
         setEstadoBusqueda(false);
     }
 
     const buscarVentas = () => {
-        return fetch(`http://localhost:3010/ventas/${tipo}`,
+        return fetch(`${apiBaseUrl}/ventas/${tipo}`,
             {
                 method: 'post',
                 headers: {
