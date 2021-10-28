@@ -50,7 +50,7 @@ Usuario.listar = (resultado) => {
 
 Usuario.actualizar = (usuario, resultado) => {
     sql.query('CALL spActualizarUsuario(?,?,?);',
-    [usuario.Id, usuario.Rol, usuario.Activo],
+    [usuario.Id, usuario.Rol, usuario.Estado],
     (err, res) => {
         // verificar si hubo error ejectutando la consulta
         if (err) {
@@ -74,12 +74,12 @@ Usuario.actualizar = (usuario, resultado) => {
 
 // Metodo que agrega un registro
 Usuario.agregar = (usuario, resultado) => {
-    sql.query('CALL spActualizarUsuario(?,?,?,?,?);',
-    [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave, usuario.Rol],
+    sql.query('CALL spAgregarUsuario(?,?,?,?);',
+    [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
     (err, res) => {
         // verificar si hubo error ejectutando la consulta
         if (err) {
-            console.log("Error actualizando moneda:", err);
+            console.log("Error actualizando usuario:", err);
             resultado(err, null);
             return;
         }

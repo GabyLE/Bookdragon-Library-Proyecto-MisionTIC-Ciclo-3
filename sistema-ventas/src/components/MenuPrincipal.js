@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Box, Drawer, Typography, List, ListItem, ListItemText } from '@material-ui/core';
+import { IconButton, Box, Drawer, Typography, List, ListItem, ListItemText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
 /* import ModalLogin from './login/Login'; */
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -44,8 +46,10 @@ const theme = createTheme({
     },
     palette: {
         primary: {
-            main: '#FFC107',
-            darker: '#053e85',
+            main: '#00BCD4',
+        },
+        secondary: {
+            main: '#512DA8',
         },
         neutral: {
             main: '#64748B',
@@ -130,8 +134,9 @@ const MenuPrincipal = () => {
     )
 
     return (
-        <AppBar position="static">
-            <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+            <AppBar position="static" color = "secondary">
+
                 <Toolbar>
                     {isAuthenticated ? (
                         <IconButton
@@ -168,8 +173,9 @@ const MenuPrincipal = () => {
                 >
                     {menu()}
                 </Drawer>
-            </ThemeProvider>
-        </AppBar>
+
+            </AppBar>
+        </ThemeProvider>
     )
 }
 

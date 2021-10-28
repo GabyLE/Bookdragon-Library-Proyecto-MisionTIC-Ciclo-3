@@ -7,6 +7,10 @@ import {ThemeProvider } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Paper from '@mui/material/Paper';
+//MIS COMPONENTES
+import ModalEditar from '../components/EditarUsuario/Modal'
+import Confirmacion from '../components/Confirmacion';
+import { apiBaseUrl } from '../utils/Api';
 
 const columnas = [
     { field: "id", headerName: "ID", width: 100 },
@@ -27,6 +31,12 @@ const Usuarios = () => {
 
     const [estadoListado, setEstadoListado] = useState(true);
 
+    const [estadoModal, setEstadoModal] = useState(false);
+
+    const [usuarioEditado, setUsuarioEditado] = useState({});
+
+    const [estadoConfirmacion, setEstadoConfirmacion] = useState(false);
+
     async function obtenerUsuarios() {
         const usuariosT = await listarUsuarios();
         setUsuarios(usuariosT);
@@ -37,16 +47,61 @@ const Usuarios = () => {
         obtenerUsuarios();
     }
 
-    const modificar = () => {
-
-
+    const cerrarModal = () => {
+        setEstadoModal(false);
+        setEstadoListado(true);
     }
 
-    const eliminar = () => {
-
+    const modificar = () => {
+        if (usuarioSeleccionado) {
+            const usuario = usuarioSeleccionado;
+            setUsuarioEditado(usuario);
+            setEstadoModal(true);
+        }
+        else {
+            window.alert("Por favor seleccione un registro");
+        }
     }
 
     var usuarioSeleccionado;
+
+    const eliminar = () => {
+        if (usuarioSeleccionado) {
+            const usuario = usuarioSeleccionado;
+            setUsuarioEditado(usuario);
+            setEstadoConfirmacion(true);
+        }
+        else {
+            window.alert("Por favor seleccione un registro");
+        }
+    }
+
+    const confirmarEliminacion = () => {
+        fetch(`${apiBaseUrl}/usuarios/${usuarioEditado.id}`,
+            {
+                method: 'delete',
+            })
+            .then((res) => {
+                if (res.status != 200) {
+                    throw Error(res.statusText);
+                }
+                return res.json();
+            })
+            .then((json) => {
+                //window.alert(json.message);
+                setEstadoListado(true);
+
+            })
+            .catch(function (error) {
+                // Catch captura un error en tiempo de ejecución
+                window.alert(`error eliminando usuario [${error}]`);
+            });
+    }
+
+    const cerrarConfirmacion = () => {
+        setEstadoConfirmacion(false);
+    }
+    
 
     return(
         <div>
@@ -64,7 +119,7 @@ const Usuarios = () => {
                     >
                         
                         <Button variant="contained" startIcon={<EditIcon />} sx={{ m: 0.5 }} onClick={modificar} >
-                            Modificar
+                            Actualizar
                         </Button>
                         <Button variant="outlined" color="error" startIcon={<DeleteIcon />} sx={{ m: 0.5 }} onClick={eliminar} >
                             Eliminar
@@ -92,15 +147,15 @@ const Usuarios = () => {
                     />
 
 
-                    {/* <ModalEditar open={estadoModal} cerrar={cerrarModal} venta={ventaEditada} />
+                    <ModalEditar open={estadoModal} cerrar={cerrarModal} usuario={usuarioEditado} />
 
                     <Confirmacion
                         open={estadoConfirmacion}
                         cerrar={cerrarConfirmacion}
-                        titulo={"Eliminando Registro de Venta "}
+                        titulo={"Eliminando Usuario"}
                         mensaje={"¿Está seguro?"}
                         aceptar={confirmarEliminacion}
-                    /> */}
+                    />
                 </div>
             </ThemeProvider>
         </div>
