@@ -2,7 +2,7 @@ import { DataGrid } from '@material-ui/data-grid';
 import React, { useState } from 'react';
 import ModalEditar from '../components/EditarVenta/Modal';
 import Confirmacion from '../components/Confirmacion';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {ThemeProvider } from '@mui/material/styles';
 // import ToolbarCRUD from '../components/ToolbarCRUD';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';

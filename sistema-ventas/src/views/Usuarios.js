@@ -1,9 +1,11 @@
 import { DataGrid } from '@material-ui/data-grid';
 import React, { useState } from 'react';
-import { Button } from "@material-ui/core";
+import Button from '@mui/material/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import {Usuario, listarUsuarios} from '../services/Global';
-
+import {Usuario, listarUsuarios, theme} from '../services/Global';
+import {ThemeProvider } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const columnas = [
     { field: "id", headerName: "ID", width: 100 },
@@ -15,30 +17,9 @@ const columnas = [
 
 
 
-const obtenerEstilos = makeStyles(theme => ({
-    botonAgregar: {
-        borderRadius: 15,
-        backgroundColor: "#21b6ae",
-        padding: "10px 10px",
-        fontSize: "18px"
-    },
-    botonModificar: {
-        borderRadius: 15,
-        backgroundColor: "#55ff55",
-        padding: "10px 10px",
-        fontSize: "18px"
-    },
-    botonEliminar: {
-        borderRadius: 15,
-        backgroundColor: "#ff5555",
-        padding: "10px 10px",
-        fontSize: "18px"
-    }
-
-}));
 
 const Usuarios = () => {
-    const estilos = obtenerEstilos();
+    
 
     // variable que almacenará la lista de monedas
     const [usuarios, setUsuarios] = useState([]);
@@ -55,37 +36,67 @@ const Usuarios = () => {
         obtenerUsuarios();
     }
 
-    const agregar = () => {
-        
+    const modificar = () => {
+
+
     }
+
+    const eliminar = () => {
+
+    }
+
+    var usuarioSeleccionado;
 
     return(
         <div>
-            <center>
-                <h1>
-                    Lista de Usuarios
-                </h1>
-            </center>
-            <div style={{ height: 500, width: '100%' }}>
-            <Button className={estilos.botonAgregar} onClick={agregar}>
-                    Agregar
-                </Button>
-                <Button className={estilos.botonModificar}>
-                    Actualizar
-                </Button>
-                <Button className={estilos.botonEliminar}>
-                    Eliminar
-                </Button>
-                <DataGrid
-                    rows={usuarios}
-                    columns={columnas}
-                    pageSize={7}
-                    rowsPerPageOptions={[7]}
+            <ThemeProvider theme={theme}>
+                <div style={{ height: 500, width: '100%' }}>
+                    <Paper
+                        component="form"
+                        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
+                        spacing={1}
+                    >
+                        
+                        <Button variant="contained" startIcon={<EditIcon />} sx={{ m: 0.5 }} onClick={modificar} >
+                            Modificar
+                        </Button>
+                        <Button variant="outlined" color="error" startIcon={<DeleteIcon />} sx={{ m: 0.5 }} onClick={eliminar} >
+                            Eliminar
+                        </Button>
+                    </Paper>
+                    <DataGrid
+                        rows={usuarios}
+                        columns={columnas}
+                        pageSize={7}
+                        rowsPerPageOptions={[7]}
+                        sx={{ m: 2 }}
+                        onSelectionModelChange={(idUsuarios) => {
+
+                            const usuariosSeleccionados = usuarios.filter(
+                                function (fila) {
+                                    return fila.id == idUsuarios[0];
+                                }
+                            )
+                            usuarioSeleccionado = usuariosSeleccionados[0];
+                        }
+
+                        }
 
 
-                />
+                    />
 
-            </div>
+
+                    {/* <ModalEditar open={estadoModal} cerrar={cerrarModal} venta={ventaEditada} />
+
+                    <Confirmacion
+                        open={estadoConfirmacion}
+                        cerrar={cerrarConfirmacion}
+                        titulo={"Eliminando Registro de Venta "}
+                        mensaje={"¿Está seguro?"}
+                        aceptar={confirmarEliminacion}
+                    /> */}
+                </div>
+            </ThemeProvider>
         </div>
     )
 }
