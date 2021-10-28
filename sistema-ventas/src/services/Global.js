@@ -100,8 +100,8 @@ export const listarUsuarios = () => {
                 item.Id,
                 item.Usuario,
                 item.Nombre,
-                item.IdRol,
-                item.Activo));
+                item.Rol,
+                item.Estado));
         });
         
         return usuarios;

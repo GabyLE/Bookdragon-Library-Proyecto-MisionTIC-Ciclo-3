@@ -6,6 +6,7 @@ import {Usuario, listarUsuarios, theme} from '../services/Global';
 import {ThemeProvider } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Paper from '@mui/material/Paper';
 
 const columnas = [
     { field: "id", headerName: "ID", width: 100 },
@@ -49,6 +50,11 @@ const Usuarios = () => {
 
     return(
         <div>
+            <center>
+                <h1>
+                    Gestión de Usuarios
+                </h1>
+            </center>
             <ThemeProvider theme={theme}>
                 <div style={{ height: 500, width: '100%' }}>
                     <Paper
