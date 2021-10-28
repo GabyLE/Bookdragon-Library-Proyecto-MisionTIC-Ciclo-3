@@ -4,11 +4,12 @@ import { makeStyles } from '@material-ui/core';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
-/* import ModalLogin from './login/Login'; */
+import ModalLogin from './login/ModalLogin';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListSubheader from '@mui/material/ListSubheader';
 import Button from '@mui/material/Button';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import {theme, obtenerUsuarioLogueado} from '../services/Global';
 
 // ICONS
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -17,7 +18,7 @@ import StoreMallDirectoryIcon from '@mui/icons-material/StoreMallDirectory';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 //LOGIN
-import { useAuth0 } from "@auth0/auth0-react";
+//import { useAuth0 } from "@auth0/auth0-react";
 
 
 
@@ -33,55 +34,30 @@ const obtenerEstilos = makeStyles(
 );
 
 
-
-const obtenerUsuarioLogueado = () => {
-    // obtener los datos del usuario que está logueado
-    const strUsuarioLogueado = sessionStorage.getItem("usuarioLogueado");
-    return JSON.parse(strUsuarioLogueado);
-}
-
-const theme = createTheme({
-    status: {
-        danger: '#e53e3e',
-    },
-    palette: {
-        primary: {
-            main: '#00BCD4',
-        },
-        secondary: {
-            main: '#512DA8',
-        },
-        neutral: {
-            main: '#64748B',
-            contrastText: '#fff',
-        },
-    },
-});
-
 const MenuPrincipal = () => {
 
     const estilos = obtenerEstilos();
 
     // Manejo del estado de usuario logueado
-    // const [usuarioLogueado, setUsuarioLogueado] = useState(obtenerUsuarioLogueado);
+    const [usuarioLogueado, setUsuarioLogueado] = useState(obtenerUsuarioLogueado);
 
-    const { isAuthenticated, logout, loginWithRedirect, user } = useAuth0();
+    //const { isAuthenticated, logout, loginWithRedirect, user } = useAuth0();
     // const { logout } = useAuth0();
     // const { loginWithRedirect } = useAuth0();
     // const { user, isAuthenticated, isLoading } = useAuth0();
 
-    // Manejo del estod de la ventana modal
-    // const [estadoModal, setEstadoModal] = useState(false);
-    // rutina que abre la ventana modal
-    // const abrirModal = () => {
-    //     setEstadoModal(true);
-    // }
+    //Manejo del estodo de la ventana modal
+    const [estadoModal, setEstadoModal] = useState(false);
+    //rutina que abre la ventana modal
+    const abrirModal = () => {
+        setEstadoModal(true);
+    }
 
-    // // rutina que cierra la ventana modal
-    // const cerraModal = () => {
-    //     setEstadoModal(false);
-    //     setUsuarioLogueado(obtenerUsuarioLogueado);
-    // }
+    // rutina que cierra la ventana modal
+    const cerraModal = () => {
+        setEstadoModal(false);
+        setUsuarioLogueado(obtenerUsuarioLogueado);
+    }
 
     // Manejo del estado del menú
     const [estadoMenu, setEstadoMenu] = useState(false);
@@ -92,10 +68,10 @@ const MenuPrincipal = () => {
     }
 
     // rutina que realiza la salida del usuario
-    // const salir = () => {
-    //     sessionStorage.removeItem("usuarioLogueado");
-    //     setUsuarioLogueado(obtenerUsuarioLogueado);
-    // }
+    const salir = () => {
+        sessionStorage.removeItem("usuarioLogueado");
+        setUsuarioLogueado(obtenerUsuarioLogueado);
+    }
 
     const menu = () => (
 
@@ -138,7 +114,7 @@ const MenuPrincipal = () => {
             <AppBar position="static" color = "secondary">
 
                 <Toolbar>
-                    {isAuthenticated ? (
+                    {usuarioLogueado ? (
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -150,22 +126,23 @@ const MenuPrincipal = () => {
                         </IconButton>
                     ) : ''}
                     <Typography variant="h6" className={estilos.titulo}>
-                        Sistema de Ventas
+                        Librería BookDragon
                     </Typography>
                     <span>
-                        {isAuthenticated ? user.name : ""}
+                        {usuarioLogueado ? usuarioLogueado.nombre : ""}
                     </span>
-                    {isAuthenticated ? (
-                        <Button variant="contained" onClick={() => logout({ returnTo: window.location.origin })} sx={{ m: 0.5 }}>
+                    {usuarioLogueado ? (
+                        <Button variant="contained" onClick={salir}>
                             Salir
                         </Button>
                     ) : (
 
-                        <Button variant="contained" onClick={() => loginWithRedirect()} sx={{ m: 0.5 }}>
-                            Ingresar
+                        <Button variant="contained" onClick={abrirModal}>
+                            Iniciar Sesión
                         </Button>
                     )}
                 </Toolbar>
+                <ModalLogin open={estadoModal} cerrar={cerraModal}/>
                 <Drawer
                     anchor="left"
                     open={estadoMenu}

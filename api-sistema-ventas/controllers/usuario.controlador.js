@@ -20,6 +20,7 @@ exports.validarAcceso = (req, res) => {
         }
         else {
             //Se devuelve los registros obtenidos
+            console.log(data[0]);
             res.send(data[0]);
         }
     });

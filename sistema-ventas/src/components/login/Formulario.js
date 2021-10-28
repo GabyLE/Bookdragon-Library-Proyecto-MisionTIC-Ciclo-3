@@ -44,7 +44,9 @@ const Formulario = ({ cerrarFormulario }) => {
                 const usuarioLogueado = {
                     id: json.Id,
                     usuario: json.Usuario,
-                    nombre: json.Nombre
+                    nombre: json.Nombre,
+                    idRol: json.IdRol,
+                    idEstado: json.IdEstado
                 }
                 if (usuarioLogueado.nombre) {
                     //almacenar los datos del usuario para el resto de la aplicacion
@@ -63,7 +65,7 @@ const Formulario = ({ cerrarFormulario }) => {
     const estilos = obtenerEstilos();
 
     return (
-        <form className={estilos.root} onSubmit={enviarFormulario}>
+        <form className={estilos.root}>
             <TextField
                 label="Usuario"
                 variante="filled"
@@ -84,7 +86,7 @@ const Formulario = ({ cerrarFormulario }) => {
                 <Button onClick={cerrarFormulario}>
                     Cerrar
                 </Button>
-                <Button type="submit" color="primary">
+                <Button onClick={enviarFormulario} color="primary">
                     Ingresar
                 </Button>
             </div>

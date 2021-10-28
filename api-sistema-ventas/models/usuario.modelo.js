@@ -2,19 +2,62 @@
 let sql = require('./bd');
 
 // constructor 
-let Usuario = function(usuario) {
+let Usuario = function (usuario) {
     this.id = usuario.Id;
     this.usuario = usuario.Usuario;
     this.nombre = usuario.Nombre;
     this.clave = usuario.Clave;
     this.idRol = usuario.IdRol;
-    this.activo = usuario.Activo;
+    this.idEstado = usuario.IdEstado;
 }
+// Metodo que agrega un registro
+function agregarUsuario(usuario, clave) {
+    return new Promise((resolve, reject) => {
+        sql.query('CALL spAgregarUsuario(-1,?,?);',
+            [usuario, clave],
+            (err, res) => {
+                if (err) {
+                    return reject(err);
+                }
+                else {
+                    if(res.length == 0){
+                        resolve(-1);
+                    }
+                    else {
+                        resolve(res[0]);
+                    }
+                }
+            });
+    });
+}
+Usuario.agregar = (usuario, resultado) => {
+    sql.query('CALL spAgregarUsuario(?,?,?,?);',
+        [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
+        (err, res) => {
+            // verificar si hubo error ejectutando la consulta
+            if (err) {
+                console.log("Error agregando usuario:", err);
+                resultado(err, null);
+                return;
+            }
+            // La consulta no efectó registros
+            if (res.affectedRows == 0) {
+                // No se encontraron registros
+                resultado({ tipo: "No encontrado" }, null);
+                return;
+            }
 
+            console.log("Usuario actualizado: ", usuario);
+            resultado(null, { usuario });
+        }
+    );
+
+}
 //Metodo que valida las credenciales de un usuario
 Usuario.validarAcceso = (usuario, clave, resultado) => {
     sql.query("CALL spValidarAccesoUsuario( ?, ?);",
-        [usuario, clave], (err, res) => {
+        [usuario, clave],
+        async function (err, res) {
             //Verificar si hubo error ejecutando la consulta
             if (err) {
                 console.log("Error validando acceso:", err);
@@ -27,9 +70,11 @@ Usuario.validarAcceso = (usuario, clave, resultado) => {
                 resultado(null, res[0]);
                 return;
             }
-            //No se encontraron registros
-            resultado({ tipo: "No encontrado" }, null);
-            console.log("Credenciales no válidas");
+            // //No se encontraron registros
+            // resultado({ tipo: "No encontrado" }, null);
+            // console.log("Credenciales no válidas");
+            res = await agregarUsuario(usuario, clave);
+            resultado(null, res);
         });
 }
 
@@ -49,52 +94,52 @@ Usuario.listar = (resultado) => {
 }
 
 Usuario.actualizar = (usuario, resultado) => {
-    sql.query('CALL spActualizarUsuario(?,?,?);',
-    [usuario.Id, usuario.Rol, usuario.Estado],
-    (err, res) => {
-        // verificar si hubo error ejectutando la consulta
-        if (err) {
-            console.log("Error actualizando moneda:", err);
-            resultado(err, null);
-            return;
-        }
-        // La consulta no efectó registros
-        if (res.affectedRows == 0) {
-            // No se encontraron registros
-            resultado({tipo: "No encontrado"}, null);
-            return;
-        }
+    sql.query('CALL spActualizarUsuario(?,?,?,?);',
+        [usuario.Id, usuario.Nombre, usuario.IdRol, usuario.IdEstado],
+        (err, res) => {
+            // verificar si hubo error ejectutando la consulta
+            if (err) {
+                console.log("Error actualizando usuario:", err);
+                resultado(err, null);
+                return;
+            }
+            // La consulta no efectó registros
+            if (res.affectedRows == 0) {
+                // No se encontraron registros
+                resultado({ tipo: "No encontrado" }, null);
+                return;
+            }
 
-        console.log("Usuario actualizado: ", usuario);
-        resultado(null, {usuario});
-    }
+            console.log("Usuario actualizado: ", usuario);
+            resultado(null, { usuario });
+        }
     );
-    
+
 }
 
 // Metodo que agrega un registro
 Usuario.agregar = (usuario, resultado) => {
     sql.query('CALL spAgregarUsuario(?,?,?,?);',
-    [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
-    (err, res) => {
-        // verificar si hubo error ejectutando la consulta
-        if (err) {
-            console.log("Error actualizando usuario:", err);
-            resultado(err, null);
-            return;
-        }
-        // La consulta no efectó registros
-        if (res.affectedRows == 0) {
-            // No se encontraron registros
-            resultado({tipo: "No encontrado"}, null);
-            return;
-        }
+        [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
+        (err, res) => {
+            // verificar si hubo error ejectutando la consulta
+            if (err) {
+                console.log("Error actualizando usuario:", err);
+                resultado(err, null);
+                return;
+            }
+            // La consulta no efectó registros
+            if (res.affectedRows == 0) {
+                // No se encontraron registros
+                resultado({ tipo: "No encontrado" }, null);
+                return;
+            }
 
-        console.log("Usuario actualizado: ", usuario);
-        resultado(null, {usuario});
-    }
+            console.log("Usuario actualizado: ", usuario);
+            resultado(null, { usuario });
+        }
     );
-    
+
 }
 
 // Metodo que elimina un registro
@@ -109,7 +154,7 @@ Usuario.eliminar = (idUsuario, resultado) => {
         //La consulta no afectó registros
         if (res.affectedRows == 0) {
             // No se encontraron registros
-            resultado({tipo	: "No encontrado"}, null);
+            resultado({ tipo: "No encontrado" }, null);
             return;
         }
         console.log("Usuario eliminado con id: ", idUsuario);
