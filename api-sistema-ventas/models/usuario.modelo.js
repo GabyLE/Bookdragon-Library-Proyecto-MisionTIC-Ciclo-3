@@ -1,5 +1,9 @@
 // Cargar la libreria con la conexion a la bd
 let sql = require('./bd');
+// Cargar el archivo de configuración
+let authConfig = require("../config/auth.config");
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(authConfig.CLIENT_ID);
 
 // constructor 
 let Usuario = function (usuario) {
@@ -30,29 +34,35 @@ function agregarUsuario(usuario, clave) {
             });
     });
 }
-Usuario.agregar = (usuario, resultado) => {
-    sql.query('CALL spAgregarUsuario(?,?,?,?);',
-        [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
-        (err, res) => {
-            // verificar si hubo error ejectutando la consulta
-            if (err) {
-                console.log("Error agregando usuario:", err);
-                resultado(err, null);
-                return;
-            }
-            // La consulta no efectó registros
-            if (res.affectedRows == 0) {
-                // No se encontraron registros
-                resultado({ tipo: "No encontrado" }, null);
-                return;
-            }
+// Usuario.agregar = (usuario, resultado) => {
+//     sql.query('CALL spAgregarUsuario(?,?,?,?);',
+//         [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
+//         (err, res) => {
+//             // verificar si hubo error ejectutando la consulta
+//             if (err) {
+//                 console.log("Error agregando usuario:", err);
+//                 resultado(err, null);
+//                 return;
+//             }
+//             // La consulta no efectó registros
+//             if (res.affectedRows == 0) {
+//                 // No se encontraron registros
+//                 resultado({ tipo: "No encontrado" }, null);
+//                 return;
+//             }
 
-            console.log("Usuario actualizado: ", usuario);
-            resultado(null, { usuario });
-        }
-    );
+//             console.log("Usuario actualizado: ", usuario);
+//             resultado(null, { usuario });
+//         }
+//     );
 
+// }
+
+// Acceder con Google
+Usuario.googleLogin = (token, resultado) => {
+    
 }
+
 //Metodo que valida las credenciales de un usuario
 Usuario.validarAcceso = (usuario, clave, resultado) => {
     sql.query("CALL spValidarAccesoUsuario( ?, ?);",

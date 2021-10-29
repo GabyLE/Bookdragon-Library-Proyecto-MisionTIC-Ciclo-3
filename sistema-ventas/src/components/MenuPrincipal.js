@@ -80,6 +80,8 @@ const MenuPrincipal = () => {
             role="presentation"
             onClick={mostrarMenu(false)}
         >
+            // Administrador
+            
             <List subheader={<ListSubheader>Navegación</ListSubheader>}>
                 <ListItem button component="a" href={"/Home"} >
                     <ListItemIcon>
@@ -121,6 +123,7 @@ const MenuPrincipal = () => {
                             aria_label="Menu Principal"
                             className={estilos.botonMenu}
                             onClick={mostrarMenu(true)}
+                            
                         >
                             <MenuIcon />
                         </IconButton>
@@ -128,16 +131,16 @@ const MenuPrincipal = () => {
                     <Typography variant="h6" className={estilos.titulo}>
                         Librería BookDragon
                     </Typography>
-                    <span>
+                    <span sx={{ m: 0.5 }}>
                         {usuarioLogueado ? usuarioLogueado.nombre : ""}
                     </span>
                     {usuarioLogueado ? (
-                        <Button variant="contained" onClick={salir}>
+                        <Button variant="contained" onClick={salir} sx={{ m: 0.5 }}>
                             Salir
                         </Button>
                     ) : (
 
-                        <Button variant="contained" onClick={abrirModal}>
+                        <Button variant="contained" onClick={abrirModal} sx={{ m: 0.5 }}>
                             Iniciar Sesión
                         </Button>
                     )}

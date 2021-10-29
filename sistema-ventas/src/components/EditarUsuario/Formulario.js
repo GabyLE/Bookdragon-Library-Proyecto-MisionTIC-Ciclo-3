@@ -54,13 +54,14 @@ const Formulario = ({ cerrarFormulario, usuarioEditado }) => {
                 },
                 body: JSON.stringify({
                     Id: usuarioEditado.id,
-                    Rol: rol,
-                    Estado: estado
+                    Nombre: nombre,
+                    IdRol: rol,
+                    IdEstado: estado
                 })
             })
             .then((res) => res.json())
             .then((json) => {
-                //window.alert(`Respuesta: ${json.venta}`);
+               // window.alert(`Respuesta: ${json.venta}`);
                 cerrarFormulario();
             })
             .catch(function (error) {
@@ -75,6 +76,14 @@ const Formulario = ({ cerrarFormulario, usuarioEditado }) => {
             <div>
             <h3>Actualizar Usuario</h3><br/><h4>{nombre}</h4>
             </div>}
+            <TextField
+                label="ID Producto"
+                variant="filled"
+                required
+                value={nombre}
+                onChange={(e) => { setNombre(e.target.value) }}
+            />
+
             <TextField
 
                             select
