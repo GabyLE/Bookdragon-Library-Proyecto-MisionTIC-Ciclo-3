@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { IconButton, Box, Drawer, Typography, List, ListItem, ListItemText } from '@material-ui/core';
+import { IconButton, Box, Drawer, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import ModalLogin from './login/ModalLogin';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListSubheader from '@mui/material/ListSubheader';
 import Button from '@mui/material/Button';
 import { ThemeProvider } from '@mui/material/styles';
-import {theme, obtenerUsuarioLogueado} from '../services/Global';
+import { theme, obtenerUsuarioLogueado } from '../services/Global';
 
 // ICONS
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -81,32 +85,42 @@ const MenuPrincipal = () => {
             role="presentation"
             onClick={mostrarMenu(false)}
         >
-            // Administrador
+
             <List subheader={<ListSubheader>Navegación</ListSubheader>}>
-                <ListItem button component="a" href={"/Home"} >
-                    <ListItemIcon>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" />
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href={"/Home"}>
+                        <ListItemIcon>
+                            <HomeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Home" />
+                    </ListItemButton>
                 </ListItem>
-                <ListItem button component="a" href={"/Ventas"} >
-                    <ListItemIcon>
-                        <ReceiptIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Ventas" />
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href={"/Ventas"}>
+                        <ListItemIcon>
+                            <ReceiptIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Ventas" />
+                    </ListItemButton>
                 </ListItem>
-                <ListItem button component="a" href={"/Productos"} >
-                    <ListItemIcon>
-                        <StoreMallDirectoryIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Productos" />
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href={"/Productos"}>
+                        <ListItemIcon>
+                            <StoreMallDirectoryIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Productos" />
+                    </ListItemButton>
                 </ListItem>
-                <ListItem button component="a" href={"/Usuarios"} >
-                    <ListItemIcon>
-                        <PeopleAltIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Usuarios" />
+
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href={"/Usuarios"}>
+                        <ListItemIcon>
+                            <PeopleAltIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Usuarios" />
+                    </ListItemButton>
                 </ListItem>
+
             </List>
         </Box>
     )
@@ -114,7 +128,7 @@ const MenuPrincipal = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <AppBar position="static" color = "secondary">
+            <AppBar position="static" color="secondary">
 
                 <Toolbar>
                     {usuarioLogueado ? (
@@ -124,7 +138,7 @@ const MenuPrincipal = () => {
                             aria_label="Menu Principal"
                             className={estilos.botonMenu}
                             onClick={mostrarMenu(true)}
-                            
+
                         >
                             <MenuIcon />
                         </IconButton>
@@ -146,14 +160,14 @@ const MenuPrincipal = () => {
                         </Button>
                     )}
                 </Toolbar>
-                <ModalLogin open={estadoModal} cerrar={cerraModal}/>
+                <ModalLogin open={estadoModal} cerrar={cerraModal} />
                 <Drawer
                     anchor="left"
                     open={estadoMenu}
                     onClose={mostrarMenu(false)}
                 >
                     {menuAdmin()}
-                </Drawer> 
+                </Drawer>
 
             </AppBar>
         </ThemeProvider>
