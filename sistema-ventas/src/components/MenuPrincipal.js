@@ -61,6 +61,7 @@ const MenuPrincipal = () => {
 
     // Manejo del estado del menú
     const [estadoMenu, setEstadoMenu] = useState(false);
+    const [idRol, setIdRol] = useState('');
 
     // rutina que desactiva el despliegue del menú
     const mostrarMenu = (estado) => () => {
@@ -73,7 +74,7 @@ const MenuPrincipal = () => {
         setUsuarioLogueado(obtenerUsuarioLogueado);
     }
 
-    const menu = () => (
+    const menuAdmin = () => (
 
         <Box
             sx={{ width: 300 }}
@@ -81,7 +82,6 @@ const MenuPrincipal = () => {
             onClick={mostrarMenu(false)}
         >
             // Administrador
-            
             <List subheader={<ListSubheader>Navegación</ListSubheader>}>
                 <ListItem button component="a" href={"/Home"} >
                     <ListItemIcon>
@@ -111,6 +111,7 @@ const MenuPrincipal = () => {
         </Box>
     )
 
+
     return (
         <ThemeProvider theme={theme}>
             <AppBar position="static" color = "secondary">
@@ -135,7 +136,7 @@ const MenuPrincipal = () => {
                         {usuarioLogueado ? usuarioLogueado.nombre : ""}
                     </span>
                     {usuarioLogueado ? (
-                        <Button variant="contained" onClick={salir} sx={{ m: 0.5 }}>
+                        <Button variant="contained" onClick={salir} sx={{ m: 0.5 }} href={"/"} >
                             Salir
                         </Button>
                     ) : (
@@ -151,8 +152,8 @@ const MenuPrincipal = () => {
                     open={estadoMenu}
                     onClose={mostrarMenu(false)}
                 >
-                    {menu()}
-                </Drawer>
+                    {menuAdmin()}
+                </Drawer> 
 
             </AppBar>
         </ThemeProvider>

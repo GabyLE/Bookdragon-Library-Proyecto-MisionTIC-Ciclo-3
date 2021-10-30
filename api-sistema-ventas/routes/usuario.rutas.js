@@ -12,4 +12,6 @@ module.exports = (app) => {
 
      //metodo que valida las credenciales de un usuario
      app.post("/usuarios/validaracceso", usuarios.validarAcceso);
+
+     app.post("/usuarios/auth/google", usuarios.googleLogin);
 }

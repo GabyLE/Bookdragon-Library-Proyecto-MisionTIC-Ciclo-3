@@ -26,6 +26,30 @@ exports.validarAcceso = (req, res) => {
     });
 }
 
+// Login google
+exports.googleLogin = (req, res) => {
+    // validar que la solicitud tenga datos
+    if(!req.body) {
+        res.status(400).send({message: 'El contenido del mensaje debe tener información'});
+    }
+    Usuario.googleLogin(req.body, (err, data) => {
+        // Verificar si hubo error
+        if (err) {
+            if (err.tipo == "No encontrado") {
+                res.status(404).send({message: 'No se actualizó ningun usuario con google'});
+            }
+            else {
+                res.status(500).send({message: 'Error actualizando usuario con google'});
+            }
+        }
+        else {
+            // se devuelve el registro actualizado
+            res.header('Access-Control-Allow-Origin', '*');
+            res.send(data[0]);
+        }
+    })
+}
+
 // Metodo web para obtener la lista de usuarios
 exports.listar = (req, res) => {
     Usuario.listar((err, data) => {

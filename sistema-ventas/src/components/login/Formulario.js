@@ -2,7 +2,7 @@ import { TextField, Button } from "@material-ui/core";
 import React, { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleLogin from 'react-google-login';
-import { apiBaseUrl } from '../utils/Api';
+import { apiBaseUrl } from '../../utils/Api';
 
 
 const obtenerEstilos = makeStyles(theme => ({
@@ -27,36 +27,46 @@ const Formulario = ({ cerrarFormulario }) => {
     const [usuario, setUsuario] = useState('');
     const [clave, setClave] = useState('');
 
-    const responseGoogle = async googleData => {
-        const res = await fetch(`${apiBaseUrl}/usuarios/auth/google`, {
+
+    const responseSuccessGoogle = (response) => {
+        console.log(response);
+        fetch(`${apiBaseUrl}/usuarios/auth/google`, {
             method: "POST",
             body: JSON.stringify({
-                token: googleData.tokenId
+                tokenId: response.tokenId
             }),
             headers: {
                 "Content-Type": "application/json"
             }
-        })
-            .then((res) => await res.json())
-            .then((json) => {
-                const usuarioLogueado = {
-                    id: json.Id,
-                    usuario: json.Usuario,
-                    nombre: json.Nombre,
-                    idRol: json.IdRol,
-                    idEstado: json.IdEstado
-                }
-                if (usuarioLogueado.nombre) {
-                    //almacenar los datos del usuario para el resto de la aplicacion
-                    const strUsuarioLogueado = JSON.stringify(usuarioLogueado);
-                    sessionStorage.setItem("usuarioLogueado", strUsuarioLogueado);
-                }
-                cerrarFormulario();
-            })
-        //const data = await res.json()
-        // store returned user somehow
+        }).then((res) => res.json())
+        .then((json) => {
+            //window.alert(json.Nombre);
+            const usuarioLogueado = {
+                id: json.Id,
+                usuario: json.Usuario,
+                nombre: json.Nombre,
+                idRol: json.IdRol,
+                idEstado: json.IdEstado
+            }
+            console.log(usuarioLogueado);
+            if (usuarioLogueado.nombre) {
+                //almacenar los datos del usuario para el resto de la aplicacion
+                const strUsuarioLogueado = JSON.stringify(usuarioLogueado);
+                sessionStorage.setItem("usuarioLogueado", strUsuarioLogueado);
+            }
+            else {
+                window.alert("Las credenciales no son válidas");
+                sessionStorage.removeItem("usuarioLogueado");
+            }
+            cerrarFormulario();
+        });
+        
+        
     }
 
+    const responseErrorGoogle = (response) => {
+        console.log(response);
+    }
 
     const enviarFormulario = (e) => {
         //Consumir la API para validar las credenciales
@@ -123,8 +133,8 @@ const Formulario = ({ cerrarFormulario }) => {
                 <GoogleLogin
                     clientId="756843752335-p6ic3f1ahrvn8v6dnfjmmqlov7he46e9.apps.googleusercontent.com"
                     buttonText="Ingresa con Google"
-                    onSuccess={responseGoogle}
-                    onFailure={responseGoogle}
+                    onSuccess={responseSuccessGoogle}
+                    onFailure={responseErrorGoogle}
                     cookiePolicy={'single_host_origin'}
                 />
                 <Button onClick={enviarFormulario} color="primary">

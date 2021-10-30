@@ -24,7 +24,7 @@ function agregarUsuario(usuario, clave) {
                     return reject(err);
                 }
                 else {
-                    if(res.length == 0){
+                    if (res.length == 0) {
                         resolve(-1);
                     }
                     else {
@@ -34,34 +34,46 @@ function agregarUsuario(usuario, clave) {
             });
     });
 }
-// Usuario.agregar = (usuario, resultado) => {
-//     sql.query('CALL spAgregarUsuario(?,?,?,?);',
-//         [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
-//         (err, res) => {
-//             // verificar si hubo error ejectutando la consulta
-//             if (err) {
-//                 console.log("Error agregando usuario:", err);
-//                 resultado(err, null);
-//                 return;
-//             }
-//             // La consulta no efectó registros
-//             if (res.affectedRows == 0) {
-//                 // No se encontraron registros
-//                 resultado({ tipo: "No encontrado" }, null);
-//                 return;
-//             }
-
-//             console.log("Usuario actualizado: ", usuario);
-//             resultado(null, { usuario });
-//         }
-//     );
-
-// }
 
 // Acceder con Google
 Usuario.googleLogin = (token, resultado) => {
-    
+
+    console.log(token.tokenId);
+
+    client.verifyIdToken({
+        idToken: token.tokenId,
+        audience: authConfig.CLIENT_ID
+    }).then((res => {
+        const { email_verified, email } = res.getPayload()
+        if (email_verified) {
+            sql.query("CALL spValidarAccesoUsuario( ?, ' ');",
+                [email],
+                async function (err, res) {
+                    //Verificar si hubo error ejecutando la consulta
+                    if (err) {
+                        console.log("Error validando acceso:", err);
+                        resultado(err, null);
+                        return;
+                    }
+                    //La consulta devuelve resultados
+                    if (res.length && res[0].length) {
+                        console.log("Usuario encontrado :", res[0]);
+                        resultado(null, res[0]);
+                        return;
+                    }
+                    // //No se encontraron registros
+                    // resultado({ tipo: "No encontrado" }, null);
+                    // console.log("Credenciales no válidas");
+                    res = await agregarUsuario(email, ' ');
+                    resultado(null, res);
+                });
+        }
+        console.log(res.getPayload())
+    }))
+
+
 }
+
 
 //Metodo que valida las credenciales de un usuario
 Usuario.validarAcceso = (usuario, clave, resultado) => {
@@ -127,30 +139,6 @@ Usuario.actualizar = (usuario, resultado) => {
 
 }
 
-// Metodo que agrega un registro
-Usuario.agregar = (usuario, resultado) => {
-    sql.query('CALL spAgregarUsuario(?,?,?,?);',
-        [usuario.Id, usuario.Usuario, usuario.Nombre, usuario.Clave],
-        (err, res) => {
-            // verificar si hubo error ejectutando la consulta
-            if (err) {
-                console.log("Error actualizando usuario:", err);
-                resultado(err, null);
-                return;
-            }
-            // La consulta no efectó registros
-            if (res.affectedRows == 0) {
-                // No se encontraron registros
-                resultado({ tipo: "No encontrado" }, null);
-                return;
-            }
-
-            console.log("Usuario actualizado: ", usuario);
-            resultado(null, { usuario });
-        }
-    );
-
-}
 
 // Metodo que elimina un registro
 Usuario.eliminar = (idUsuario, resultado) => {
