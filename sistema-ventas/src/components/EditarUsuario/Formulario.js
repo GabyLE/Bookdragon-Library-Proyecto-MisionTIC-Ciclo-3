@@ -26,7 +26,6 @@ const obtenerEstilos = makeStyles(theme => ({
 const estados = [
     { label: 'Autorizado', value: 0 },
     { label: 'No Autorizado', value: 1 },
-    { label: 'Pendiente', value: 2 }
 ];
 
 const roles = [

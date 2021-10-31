@@ -1,8 +1,11 @@
-import { TextField, Button } from "@material-ui/core";
+import { Button } from "@material-ui/core";
+import TextField from '@mui/material/TextField';
 import React, { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleLogin from 'react-google-login';
 import { apiBaseUrl } from '../../utils/Api';
+import Box from '@mui/material/Box';
+
 
 
 const obtenerEstilos = makeStyles(theme => ({
@@ -94,6 +97,7 @@ const Formulario = ({ cerrarFormulario }) => {
                     //almacenar los datos del usuario para el resto de la aplicacion
                     const strUsuarioLogueado = JSON.stringify(usuarioLogueado);
                     sessionStorage.setItem("usuarioLogueado", strUsuarioLogueado);
+
                 }
                 else {
                     window.alert("Las credenciales no son válidas");
@@ -109,11 +113,11 @@ const Formulario = ({ cerrarFormulario }) => {
 
 
     return (
-        <form className={estilos.root}>
+        <form className={estilos.root} onSubmit={enviarFormulario}>
             <TextField
                 label="Usuario"
                 variante="filled"
-                required
+                required 
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
             />
@@ -121,7 +125,7 @@ const Formulario = ({ cerrarFormulario }) => {
             <TextField
                 label="Clave"
                 variante="filled"
-                required
+                required 
                 type="password"
                 value={clave}
                 onChange={(e) => setClave(e.target.value)}
@@ -137,7 +141,7 @@ const Formulario = ({ cerrarFormulario }) => {
                     onFailure={responseErrorGoogle}
                     cookiePolicy={'single_host_origin'}
                 />
-                <Button onClick={enviarFormulario} color="primary">
+                <Button type="submit" color="primary">
                     Ingresar
                 </Button>
             </div>

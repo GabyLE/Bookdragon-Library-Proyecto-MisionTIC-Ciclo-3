@@ -5,24 +5,24 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import ModalLogin from './login/ModalLogin';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListSubheader from '@mui/material/ListSubheader';
 import Button from '@mui/material/Button';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme, obtenerUsuarioLogueado } from '../services/Global';
+import Navegacion from './Navegacion';
+import Modal from '@mui/material/Modal';
 
-// ICONS
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import HomeIcon from '@mui/icons-material/Home';
-import StoreMallDirectoryIcon from '@mui/icons-material/StoreMallDirectory';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
-//LOGIN
-//import { useAuth0 } from "@auth0/auth0-react";
 
 
 
@@ -42,16 +42,28 @@ const MenuPrincipal = () => {
 
     const estilos = obtenerEstilos();
 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     // Manejo del estado de usuario logueado
     const [usuarioLogueado, setUsuarioLogueado] = useState(obtenerUsuarioLogueado);
+    // Manejo del estado del menú
+    const [estadoMenu, setEstadoMenu] = useState(false);
+    const [estadoVentas, setEstadoVentas] = useState(true);
+    const [estadoHome, setEstadoHome] = useState(true);
+    const [estadoProductos, setEstadoProductos] = useState(true);
+    const [estadoUsuarios, setEstadoUsuarios] = useState(true);
 
-    //const { isAuthenticated, logout, loginWithRedirect, user } = useAuth0();
-    // const { logout } = useAuth0();
-    // const { loginWithRedirect } = useAuth0();
-    // const { user, isAuthenticated, isLoading } = useAuth0();
 
     //Manejo del estodo de la ventana modal
     const [estadoModal, setEstadoModal] = useState(false);
+
+    if (usuarioLogueado && usuarioLogueado.idRol == 3) {
+        handleOpen();
+        sessionStorage.removeItem("usuarioLogueado");
+        setUsuarioLogueado(obtenerUsuarioLogueado);
+    }
     //rutina que abre la ventana modal
     const abrirModal = () => {
         setEstadoModal(true);
@@ -63,13 +75,23 @@ const MenuPrincipal = () => {
         setUsuarioLogueado(obtenerUsuarioLogueado);
     }
 
-    // Manejo del estado del menú
-    const [estadoMenu, setEstadoMenu] = useState(false);
-    const [idRol, setIdRol] = useState('');
-
     // rutina que desactiva el despliegue del menú
     const mostrarMenu = (estado) => () => {
         setEstadoMenu(estado);
+
+        if (usuarioLogueado.idRol == 2) {
+
+            setEstadoVentas(false);
+            setEstadoHome(false);
+            setEstadoProductos(true);
+            setEstadoUsuarios(true);
+        }
+        else if (usuarioLogueado.idRol == 1) {
+            setEstadoVentas(false);
+            setEstadoHome(false);
+            setEstadoProductos(false);
+            setEstadoUsuarios(false);
+        }
     }
 
     // rutina que realiza la salida del usuario
@@ -78,52 +100,7 @@ const MenuPrincipal = () => {
         setUsuarioLogueado(obtenerUsuarioLogueado);
     }
 
-    const menuAdmin = () => (
 
-        <Box
-            sx={{ width: 300 }}
-            role="presentation"
-            onClick={mostrarMenu(false)}
-        >
-
-            <List subheader={<ListSubheader>Navegación</ListSubheader>}>
-                <ListItem disablePadding>
-                    <ListItemButton component="a" href={"/Home"}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Home" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component="a" href={"/Ventas"}>
-                        <ListItemIcon>
-                            <ReceiptIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Ventas" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component="a" href={"/Productos"}>
-                        <ListItemIcon>
-                            <StoreMallDirectoryIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Productos" />
-                    </ListItemButton>
-                </ListItem>
-
-                <ListItem disablePadding>
-                    <ListItemButton component="a" href={"/Usuarios"}>
-                        <ListItemIcon>
-                            <PeopleAltIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Usuarios" />
-                    </ListItemButton>
-                </ListItem>
-
-            </List>
-        </Box>
-    )
 
 
     return (
@@ -131,7 +108,7 @@ const MenuPrincipal = () => {
             <AppBar position="static" color="secondary">
 
                 <Toolbar>
-                    {usuarioLogueado ? (
+                    {(usuarioLogueado && usuarioLogueado.idRol != 3) ? (
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -142,6 +119,7 @@ const MenuPrincipal = () => {
                         >
                             <MenuIcon />
                         </IconButton>
+
                     ) : ''}
                     <Typography variant="h6" className={estilos.titulo}>
                         Librería BookDragon
@@ -166,8 +144,35 @@ const MenuPrincipal = () => {
                     open={estadoMenu}
                     onClose={mostrarMenu(false)}
                 >
-                    {menuAdmin()}
+                    <Box
+                        sx={{ width: 300 }}
+                        role="presentation"
+                        onClick={mostrarMenu(false)}
+                    >
+                        <Navegacion
+                            estadoHome={estadoHome}
+                            estadoVentas={estadoVentas}
+                            estadoProductos={estadoProductos}
+                            estadoUsuarios={estadoUsuarios}
+                        />
+                    </Box>
                 </Drawer>
+
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Usuario no Autorizado
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            Por favor espere
+                        </Typography>
+                    </Box>
+                </Modal>
 
             </AppBar>
         </ThemeProvider>

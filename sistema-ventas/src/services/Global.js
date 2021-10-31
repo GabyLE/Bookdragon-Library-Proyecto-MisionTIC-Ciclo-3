@@ -1,12 +1,14 @@
 import {apiBaseUrl} from '../utils/Api';
-
+import React, { useState } from 'react';
 import { createTheme} from '@mui/material/styles';
+
 
 export const obtenerUsuarioLogueado = () => {
     // obtener los datos del usuario que está logueado
     const strUsuarioLogueado = sessionStorage.getItem("usuarioLogueado");
     return JSON.parse(strUsuarioLogueado);
 }
+
 
 export const Usuario = function (id, usuario, nombre, rol, estado) {
     this.id = id;

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
 import fondo from '../assets/img/fondo2.jpg';
 import logo from '../assets/img/BookDragonLibreria.gif';
+
 
 const obtenerEstilos = makeStyles(theme => ({
     root: {
@@ -25,6 +26,8 @@ const obtenerEstilos = makeStyles(theme => ({
 
 const Inicio = () => {
     const estilos = obtenerEstilos();
+    // Manejo del estado de usuario logueado
+    
 
     return (
         <section className={estilos.root}>
