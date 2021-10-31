@@ -25,13 +25,14 @@ const obtenerEstilos = makeStyles(theme => ({
 
 const estados = [
     { label: 'Autorizado', value: 0 },
-    { label: 'No Autorizado', value: 1 },
+    { label: 'Pendiente', value: 1 },
+    { label: 'No Autorizado', value: 2 },
 ];
 
 const roles = [
     { label: 'Administrador', value: 1 },
     { label: 'Vendedor', value: 2 },
-    { label: 'Pendiente', value: 3 }
+    { label: 'Sin Rol', value: 3}
 ];
 
 const Formulario = ({ cerrarFormulario, usuarioEditado }) => {

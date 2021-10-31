@@ -1,11 +1,12 @@
 import { DataGrid } from '@material-ui/data-grid';
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Producto, listarProductos, theme} from '../services/Global';
+import { Producto, listarProductos, theme } from '../services/Global';
 import { ThemeProvider } from '@mui/material/styles';
 //MIS COMPONENTES
 import ModalEditar from '../components/EditarProducto/Modal';
 import Confirmacion from '../components/Confirmacion';
+import Mensaje from '../components/Mensaje';
 //TOOLBAR
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
@@ -53,6 +54,11 @@ const Productos = () => {
 
     const [estadoConfirmacion, setEstadoConfirmacion] = useState(false);
 
+    // Mensaje
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     async function obtenerProductos() {
         const productosT = await listarProductos();
         setProductos(productosT);
@@ -61,10 +67,10 @@ const Productos = () => {
 
 
     const buscar = () => {
-        if(dato){
+        if (dato) {
             setEstadoBusqueda(true);
         }
-        else{
+        else {
             setEstadoListado(true);
         }
     }
@@ -88,23 +94,23 @@ const Productos = () => {
                 })
             })
             .then((res) => {
-                if(!res.ok) {
+                if (!res.ok) {
                     throw new Error(`HTTP error, estado = ${res.status}`);
                 }
                 return res.json();
             })
             .then((json) => {
-                
+
                 var busquedaT = [];
                 json.map((item) => {
-                    busquedaT.push( new Producto(
+                    busquedaT.push(new Producto(
                         item.Id,
                         item.Nombre,
                         item.ValorUnitario,
                         item.Estado)
                     );
                 });
-               
+
                 return busquedaT;
             })
             .catch(function (error) {
@@ -138,7 +144,8 @@ const Productos = () => {
             setEstadoModal(true);
         }
         else {
-            window.alert("Por favor seleccione un registro");
+            //window.alert("Por favor seleccione un registro");
+            handleOpen();
         }
     }
     var productoSeleccionado;
@@ -216,7 +223,7 @@ const Productos = () => {
                             inputProps={{ 'aria-label': 'buscar' }}
                             onChange={(e) => { setDato(e.target.value) }}
                         />
-                        <IconButton  sx={{ p: '10px' }} aria-label="search" onClick={buscar}>
+                        <IconButton sx={{ p: '10px' }} aria-label="search" onClick={buscar}>
                             <SearchIcon />
                         </IconButton>
                         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
@@ -260,6 +267,13 @@ const Productos = () => {
                         titulo={"Eliminando Producto "}
                         mensaje={"¿Está seguro?"}
                         aceptar={confirmarEliminacion}
+                    />
+
+                    <Mensaje
+                        open={open}
+                        titulo=""
+                        mensaje="Por favor seleccione un registro"
+                        cerrar={handleClose}
                     />
                 </div>
             </ThemeProvider>
