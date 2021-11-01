@@ -81,22 +81,22 @@ const Formulario = ({ cerrarFormulario, productoEditado }) => {
                 value={valorUnitario}
                 onChange={(e) => { setValorUnitario(e.target.value) }}
             />
-            
+
             <TextField
 
-                            select
-                            label="Estado"
-                            value={estado}
-                            onChange={(e) => { setEstado(e.target.value) }}
-                            variant="standard"
-                            sx={{ ml: 1, flex: 1, width: 200 }}
-                        >
-                            {estados.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+                select
+                label="Estado"
+                value={estado}
+                onChange={(e) => { setEstado(e.target.value) }}
+                variant="standard"
+                sx={{ ml: 1, flex: 1, width: 200 }}
+            >
+                {estados.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
 
             <div>
                 <Button variant="contained" onClick={cerrarFormulario} color="neutral">

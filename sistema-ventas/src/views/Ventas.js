@@ -29,13 +29,14 @@ const tipos = [
 
 const columnas = [
     { field: "id", headerName: "ID Venta", width: 135 },
+    { field: "estado", headerName: "Estado", width: 130},
     { field: "idProducto", headerName: "ID Producto", width: 160 },
     { field: "nombreProducto", headerName: "Producto", width: 250 },
     { field: "valorUnitario", headerName: "Valor Unitario", width: 170 },
     { field: "cantidad", headerName: "Cantidad", width: 150 },
-    { field: "fecha", headerName: "Fecha", width: 200 },
+    { field: "fecha", headerName: "Fecha", width: 150 },
     { field: "clienteDocumento", headerName: "Cliente ID", width: 160 },
-    { field: "nombreCliente", headerName: "Cliente", width: 300 },
+    { field: "nombreCliente", headerName: "Cliente", width: 200 },
     { field: "nombreUsuario", headerName: "Encargado", width: 300 },
 ]
 
@@ -114,7 +115,8 @@ const Ventas = () => {
                         item.ClienteDocumento,
                         item.NombreCliente,
                         item.IdUsuario,
-                        item.NombreUsuario)
+                        item.NombreUsuario,
+                        item.Estado)
                     );
                 });
 
@@ -145,7 +147,7 @@ const Ventas = () => {
     }
 
     const agregar = () => {
-        const ventaE = new VentaA(-1, "", "", "", "", "", "")
+        const ventaE = new VentaA(-1, "", "", "", "", "", "", "")
         setVentaEditada(ventaE);
         setEstadoModal(true);
     }
@@ -170,7 +172,8 @@ const Ventas = () => {
             setEstadoConfirmacion(true);
         }
         else {
-            window.alert("Por favor seleccione un registro");
+            //window.alert("Por favor seleccione un registro");
+            handleOpen();
         }
     }
 
