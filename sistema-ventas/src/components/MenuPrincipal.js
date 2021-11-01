@@ -9,20 +9,7 @@ import Button from '@mui/material/Button';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme, obtenerUsuarioLogueado } from '../services/Global';
 import Navegacion from './Navegacion';
-import Modal from '@mui/material/Modal';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
+import Mensaje from './Mensaje';
 
 
 
@@ -42,9 +29,13 @@ const MenuPrincipal = () => {
 
     const estilos = obtenerEstilos();
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [openPendiente, setOpenPendiente] = useState(false);
+    const handleOpenP = () => setOpenPendiente(true);
+    const handleCloseP = () => setOpenPendiente(false);
+
+    const [openNA, setOpenNA] = useState(false);
+    const handleOpenNA = () => setOpenNA(true);
+    const handleCloseNA = () => setOpenNA(false);
 
     // Manejo del estado de usuario logueado
     const [usuarioLogueado, setUsuarioLogueado] = useState(obtenerUsuarioLogueado);
@@ -59,8 +50,13 @@ const MenuPrincipal = () => {
     //Manejo del estodo de la ventana modal
     const [estadoModal, setEstadoModal] = useState(false);
 
-    if (usuarioLogueado && usuarioLogueado.idRol == 3) {
-        handleOpen();
+    if (usuarioLogueado && usuarioLogueado.idEstado == 1) {
+        handleOpenP();
+        sessionStorage.removeItem("usuarioLogueado");
+        setUsuarioLogueado(obtenerUsuarioLogueado);
+    } 
+    else if (usuarioLogueado && usuarioLogueado.idEstado == 2) {
+        handleOpenNA();
         sessionStorage.removeItem("usuarioLogueado");
         setUsuarioLogueado(obtenerUsuarioLogueado);
     }
@@ -108,7 +104,7 @@ const MenuPrincipal = () => {
             <AppBar position="static" color="secondary">
 
                 <Toolbar>
-                    {(usuarioLogueado && usuarioLogueado.idRol != 3) ? (
+                    {(usuarioLogueado && usuarioLogueado.idEstado != 1) ? (
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -157,22 +153,18 @@ const MenuPrincipal = () => {
                         />
                     </Box>
                 </Drawer>
-
-                <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Usuario no Autorizado
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Por favor espere
-                        </Typography>
-                    </Box>
-                </Modal>
+                <Mensaje
+                    open={openPendiente}
+                    titulo="Usuario Pendiente"
+                    mensaje="Por favor espere"
+                    cerrar={handleCloseP}
+                />
+               <Mensaje
+                    open={openNA}
+                    titulo="Acceso Restringido"
+                    mensaje="Usuario no autorizado"
+                    cerrar={handleCloseNA}
+                />
 
             </AppBar>
         </ThemeProvider>

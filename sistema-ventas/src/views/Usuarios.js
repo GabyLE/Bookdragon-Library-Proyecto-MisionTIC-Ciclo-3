@@ -2,8 +2,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import {Usuario, listarUsuarios, theme} from '../services/Global';
-import {ThemeProvider } from '@mui/material/styles';
+import { Usuario, listarUsuarios, theme } from '../services/Global';
+import { ThemeProvider } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Paper from '@mui/material/Paper';
@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import ModalEditar from '../components/EditarUsuario/Modal'
 import Confirmacion from '../components/Confirmacion';
 import { apiBaseUrl } from '../utils/Api';
+import Mensaje from '../components/Mensaje';
 
 const columnas = [
     { field: "id", headerName: "ID", width: 100 },
@@ -24,7 +25,7 @@ const columnas = [
 
 
 const Usuarios = () => {
-    
+
 
     // variable que almacenará la lista de monedas
     const [usuarios, setUsuarios] = useState([]);
@@ -37,13 +38,18 @@ const Usuarios = () => {
 
     const [estadoConfirmacion, setEstadoConfirmacion] = useState(false);
 
+    // Mensaje
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     async function obtenerUsuarios() {
         const usuariosT = await listarUsuarios();
         setUsuarios(usuariosT);
         setEstadoListado(false);
     }
 
-    if(estadoListado) {
+    if (estadoListado) {
         obtenerUsuarios();
     }
 
@@ -59,7 +65,8 @@ const Usuarios = () => {
             setEstadoModal(true);
         }
         else {
-            window.alert("Por favor seleccione un registro");
+            handleOpen();
+            //window.alert("Por favor seleccione un registro");
         }
     }
 
@@ -101,9 +108,9 @@ const Usuarios = () => {
     const cerrarConfirmacion = () => {
         setEstadoConfirmacion(false);
     }
-    
 
-    return(
+
+    return (
         <div>
             <center>
                 <h1>
@@ -117,7 +124,7 @@ const Usuarios = () => {
                         sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
                         spacing={1}
                     >
-                        
+
                         <Button variant="contained" startIcon={<EditIcon />} sx={{ m: 0.5 }} onClick={modificar} >
                             Actualizar
                         </Button>
@@ -155,6 +162,13 @@ const Usuarios = () => {
                         titulo={"Eliminando Usuario"}
                         mensaje={"¿Está seguro?"}
                         aceptar={confirmarEliminacion}
+                    />
+    
+                    <Mensaje
+                        open={open}
+                        titulo=""
+                        mensaje="Por favor seleccione un registro"
+                        cerrar={handleClose}
                     />
                 </div>
             </ThemeProvider>
