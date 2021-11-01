@@ -19,7 +19,7 @@ export const Usuario = function (id, usuario, nombre, rol, estado) {
 }
 
 export const VentaL = function (id, idProducto, nombreProducto, valorUnitario,
-    cantidad, fecha, clienteDocumento, nombreCliente, idUsuario, nombreUsuario, Estado) {
+    cantidad, fecha, clienteDocumento, nombreCliente, idUsuario, nombreUsuario, Estado, total) {
     this.id = id;
     this.idProducto = idProducto;
     this.nombreProducto = nombreProducto;
@@ -32,6 +32,7 @@ export const VentaL = function (id, idProducto, nombreProducto, valorUnitario,
     this.nombreUsuario = nombreUsuario;
     this.usuario = new Usuario(idUsuario, '', nombreUsuario, '', '');
     this.estado = Estado;
+    this.total = total;
 }
 
 export const VentaA = function (id, clienteDocumento,nombreCliente, fecha, idUsuario, nombreUsuario, idProducto, cantidad, idEstado) {
@@ -94,7 +95,8 @@ export const listarVentas = () => {
                 item.NombreCliente,
                 item.IdUsuario,
                 item.NombreUsuario,
-                item.Estado
+                item.Estado,
+                item.Total
             ));
         });
         return ventas;

@@ -29,6 +29,7 @@ const tipos = [
 
 const columnas = [
     { field: "id", headerName: "ID Venta", width: 135 },
+    { field: "total", headerName: "Total Venta", width: 180},
     { field: "estado", headerName: "Estado", width: 130},
     { field: "idProducto", headerName: "ID Producto", width: 160 },
     { field: "nombreProducto", headerName: "Producto", width: 250 },

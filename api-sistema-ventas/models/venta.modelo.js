@@ -24,7 +24,8 @@ var Venta = function (venta) {
         Estado: '',
     }),
     this.cantidad = venta.Cantidad,
-    this.idEstado = venta.IdEstado
+    this.idEstado = venta.IdEstado,
+    this.total = venta.Total
 }
 
 //Metodo que obtiene un registro basado en la clave primaria
