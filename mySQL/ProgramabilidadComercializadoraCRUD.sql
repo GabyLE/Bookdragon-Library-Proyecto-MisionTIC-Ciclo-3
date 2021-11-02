@@ -55,7 +55,7 @@ END//
 CREATE PROCEDURE spAgregarUsuario(
 IN IdUsuario int,
 IN UsuarioA varchar(100),
-IN ClaveA varchar(8)
+IN ClaveA varchar(100)
 )
 BEGIN
 	IF IdUsuario<=0 THEN

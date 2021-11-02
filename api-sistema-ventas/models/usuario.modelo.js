@@ -22,7 +22,7 @@ let Usuario = function (usuario) {
 function agregarUsuario(usuario, clave) {
     return new Promise((resolve, reject) => {
         sql.query('CALL spAgregarUsuario(-1,?,?);',
-            [usuario, Bcrypt.hashSync(clave, 10)],
+            [usuario, clave],
             (err, res) => {
                 if (err) {
                     reject(err);
@@ -50,7 +50,7 @@ Usuario.googleLogin = (token, resultado) => {
     }).then((res => {
         const { email_verified, email } = res.getPayload()
         if (email_verified) {
-            sql.query("CALL spValidarAccesoUsuario( ?, ' ');",
+            sql.query("CALL spValidarAccesoUsuario( ?, '.');",
                 [email],
                 async function (err, res) {
                     //Verificar si hubo error ejecutando la consulta
@@ -68,7 +68,7 @@ Usuario.googleLogin = (token, resultado) => {
                     // //No se encontraron registros
                     // resultado({ tipo: "No encontrado" }, null);
                     // console.log("Credenciales no válidas");
-                    res = await agregarUsuario(email, ' ');
+                    res = await agregarUsuario(email, '.');
                     resultado(null, res);
                 });
         }
@@ -145,7 +145,7 @@ Usuario.googleLogin = (token, resultado) => {
 //         res = await agregarUsuario(usuario, clave);
 //         resultado(null, res);
 //     }
-    
+
 // }
 //Metodo que valida las credenciales de un usuario
 Usuario.validarAcceso = (usuario, clave, resultado) => {
@@ -169,18 +169,18 @@ Usuario.validarAcceso = (usuario, clave, resultado) => {
             // console.log("Credenciales no válidas");
             // Agrega usuario nuevo
             agregarUsuario(usuario, clave)
-            .then((usuarioNuevo )=> {
-                res = usuarioNuevo;
-                resultado(null, res);
-                return;
-            })
-            .catch((error) => {
-                
-                resultado({tipo: "No encontrado"}, null);
-                console.log(`Error: ${error}`);
-                
-            });
-            
+                .then((usuarioNuevo) => {
+                    res = usuarioNuevo;
+                    resultado(null, res);
+                    return;
+                })
+                .catch((error) => {
+
+                    resultado({ tipo: "No encontrado" }, null);
+                    console.log(`Error: ${error}`);
+
+                });
+
         });
 }
 
