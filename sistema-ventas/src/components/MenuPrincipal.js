@@ -20,6 +20,10 @@ const obtenerEstilos = makeStyles(
         },
         titulo: {
             flexGrow: 1,
+        },
+        rol: {
+            color: "#F3F3F3",
+            fontSize: "0.9em"
         }
     })
 );
@@ -121,7 +125,7 @@ const MenuPrincipal = () => {
                         Librería BookDragon
                     </Typography>
                     <span sx={{ m: 0.5 }}>
-                        {usuarioLogueado ? usuarioLogueado.nombre : ""}
+                        <h6>{usuarioLogueado ? usuarioLogueado.nombre : ""}</h6>
                     </span>
                     {usuarioLogueado ? (
                         <Button variant="contained" onClick={salir} sx={{ m: 0.5 }} href={"/"} >
@@ -156,7 +160,7 @@ const MenuPrincipal = () => {
                 <Mensaje
                     open={openPendiente}
                     titulo="Usuario Pendiente"
-                    mensaje="Por favor espere"
+                    mensaje="Por favor espere a ser autorizado por el administrador"
                     cerrar={handleCloseP}
                 />
                <Mensaje

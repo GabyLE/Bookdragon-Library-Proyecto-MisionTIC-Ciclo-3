@@ -117,7 +117,8 @@ const Ventas = () => {
                         item.NombreCliente,
                         item.IdUsuario,
                         item.NombreUsuario,
-                        item.Estado)
+                        item.Estado,
+                        item.Total)
                     );
                 });
 
