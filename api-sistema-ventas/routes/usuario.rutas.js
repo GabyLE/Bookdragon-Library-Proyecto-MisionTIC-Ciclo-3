@@ -10,8 +10,12 @@ module.exports = (app) => {
     // metodo que eliminia un usuario
     app.delete("/usuarios/:id", usuarios.eliminar);
 
-     //metodo que valida las credenciales de un usuario
-     app.post("/usuarios/validaracceso", usuarios.validarAcceso);
+    // //metodo que cambia la clave de un usuario
+    // app.post("/usuarios/cambiarclave", usuarios.cambiarClave);
 
-     app.post("/usuarios/auth/google", usuarios.googleLogin);
+    //metodo que valida las credenciales de un usuario
+    app.post("/usuarios/validaracceso", usuarios.validarAcceso);
+
+    //ingresar con las credenciales de google
+    app.post("/usuarios/auth/google", usuarios.googleLogin);
 }

@@ -13,6 +13,18 @@ CREATE TABLE EstadoUsuario(
 	ordenado por ESTADO */
 CREATE UNIQUE INDEX ixEstado_EstadoUsuario
 	ON EstadoUsuario(Estado);
+    
+/* Crear tabla Estado */
+CREATE TABLE EstadoVenta( 
+	Id int NOT NULL, 
+	CONSTRAINT pkEstado_Id PRIMARY KEY (Id),
+	Estado VARCHAR(50) NOT NULL
+    );
+
+/* Crear indice para ESTADO
+	ordenado por ESTADO */
+CREATE UNIQUE INDEX ixEstado_EstadoVenta
+	ON EstadoVenta(Estado);
 
 /* Crear tabla Rol */
 CREATE TABLE Rol( 
@@ -32,11 +44,11 @@ CREATE TABLE Usuario(
 	CONSTRAINT pkUsuario_Id PRIMARY KEY (Id),
 	Usuario VARCHAR(100) NOT NULL,
     Nombre VARCHAR(100) NOT NULL,
-	Clave VARCHAR(50) NOT NULL,
+	Clave VARCHAR(100) NOT NULL,
     IdRol int NOT NULL,
 	CONSTRAINT fkUsuario_IdRol FOREIGN KEY (IdRol)
 		REFERENCES Rol(Id),
-    Estado BOOL NOT NULL,
+    IdEstado INT NOT NULL,
 	Foto MEDIUMBLOB NULL
 	);
     
@@ -77,7 +89,6 @@ CREATE TABLE Producto(
 	Referencia varchar(20) NULL,
 	ValorUnitario FLOAT NOT NULL,
     IdMarca int NULL, 
-	CONSTRAINT fkProducto_IdMarca FOREIGN KEY (IdMarca) REFERENCES Marca (Id),
 	Imagen MEDIUMBLOB NULL,
     Estado int NOT NULL
     );
@@ -159,11 +170,10 @@ CREATE TABLE Venta(
     NombreCliente VARCHAR(50) NOT NULL,
     Fecha date NOT NULL,
     IdProducto int NOT NULL,
-    CONSTRAINT fkVentaDetalle_IdProducto FOREIGN KEY (IdProducto)
-		REFERENCES Producto(Id),
     Cantidad FLOAT NULL,
 	Factura VARCHAR(50) NULL,
-    IdUsuario int NOT NULL
+    IdUsuario int NOT NULL,
+    IdEstado int NOT NULL
 	);
     
 /* Crear tabla VENTADETALLE */

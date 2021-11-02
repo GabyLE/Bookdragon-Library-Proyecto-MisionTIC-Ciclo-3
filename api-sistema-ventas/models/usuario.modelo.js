@@ -2,8 +2,12 @@
 let sql = require('./bd');
 // Cargar el archivo de configuración
 let authConfig = require("../config/auth.config");
+// cargar libreria oauth2 google
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(authConfig.CLIENT_ID);
+// cargar la libreria de encriptado
+var Bcrypt = require('bcrypt');
+
 
 // constructor 
 let Usuario = function (usuario) {
@@ -18,14 +22,14 @@ let Usuario = function (usuario) {
 function agregarUsuario(usuario, clave) {
     return new Promise((resolve, reject) => {
         sql.query('CALL spAgregarUsuario(-1,?,?);',
-            [usuario, clave],
+            [usuario, Bcrypt.hashSync(clave, 10)],
             (err, res) => {
                 if (err) {
-                    return reject(err);
+                    reject(err);
                 }
                 else {
                     if (res.length == 0) {
-                        resolve(-1);
+                        resolve('');
                     }
                     else {
                         resolve(res[0]);
@@ -74,7 +78,75 @@ Usuario.googleLogin = (token, resultado) => {
 
 }
 
+// // Método para cambiar la clave de usuario
+// Usuario.cambiarClave = (usuario, clave, resultado) => {
+//     sql.query("CALL spActualizarClaveUsuario(?, ?);", 
+//     [usuario, Bcrypt.hashSync(clave, 10)], (err, res) => {
+//         //Verificar si hubo error ejecutando la consulta
+//         if (err) {
+//             console.log("Error actualizando clave:", err);
+//             resultado(err, null);
+//             return;
+//         }
+//         //La consulta no afectó registros
+//         if (res.length == 0) {
+//             console.log("Usuario no encontrado :", res[0]);
+//             resultado({tipo : "No encontrado"}, null);
+//             return;
+//         }
 
+//         console.log("Clave actualizada", { usuario });
+//         resultado(null, {usuario});
+//     });
+// }
+
+// function obtenerClave(usuario){
+//     return new Promise((resolve, reject) => {
+//         sql.query(`SELECT Clave FROM Usuario WHERE Usuario='${usuario}';`,
+//         (err, res) => {
+//             // Verificar si hubo error ejecuntando la consulta
+//             if(err) {
+//                 return reject(err);
+//             } else {
+//                 // usuario no encontrado
+//                 if(res.length == 0){
+//                     resolve('');
+//                 }
+//                 // usuario encontrado 
+//                 else {
+//                     resolve(res[0].Clave);
+//                 }
+//             }
+//         });
+//     });
+// }
+
+// Metodo que valida las credenciales con encriptado
+// Usuario.validarAcceso2 = async (usuario, clave, resultado) => {
+//     // obtener la clave guardada
+//     const claveGuardada = await obtenerClave(usuario);
+//     // validar si hay clave guardada
+//     if (claveGuardada){
+//         // confrontar las claves
+//         if(Bcrypt.compareSync(clave, claveGuardada)){
+//             const data = JSON.stringify({
+//                 mensaje: "Credenciales válidas"
+//             });
+
+//             resultado(null, data);
+//         }
+//         else {
+//             resultado({tipo: "Credenciales no válidas"}, null);
+//             console.log("Credenciales no válidas");
+//         }
+
+//     } else {
+//         // Agrega usuario nuevo
+//         res = await agregarUsuario(usuario, clave);
+//         resultado(null, res);
+//     }
+    
+// }
 //Metodo que valida las credenciales de un usuario
 Usuario.validarAcceso = (usuario, clave, resultado) => {
     sql.query("CALL spValidarAccesoUsuario( ?, ?);",
@@ -95,8 +167,20 @@ Usuario.validarAcceso = (usuario, clave, resultado) => {
             // //No se encontraron registros
             // resultado({ tipo: "No encontrado" }, null);
             // console.log("Credenciales no válidas");
-            res = await agregarUsuario(usuario, clave);
-            resultado(null, res);
+            // Agrega usuario nuevo
+            agregarUsuario(usuario, clave)
+            .then((usuarioNuevo )=> {
+                res = usuarioNuevo;
+                resultado(null, res);
+                return;
+            })
+            .catch((error) => {
+                
+                resultado({tipo: "No encontrado"}, null);
+                console.log(`Error: ${error}`);
+                
+            });
+            
         });
 }
 
